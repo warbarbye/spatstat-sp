@@ -1,0 +1,15 @@
+
+Plan eksperymentów: 
+1. poprawność działania
+  utworzyć kilka obiektów w obu reprezentacjach i wyświetlić
+  sprawdzenie metod konwersji - utworzyć obiekt SP przekonwertować na PPP i sprawdzić czy konwersja działa poprawnie 
+  sprawdzenie transformacji układów współrzędnych 
+  wykonać kilka operacji typu suma, przecięcie obiektów w obu reprezentacjach i porównać wyniki 
+  sprawdzić czy poprawnie działają predykaty przestrzenne (?)
+2. czas wykonania 
+    porównać czas wykonania operacji wyświetlania dla kilku obiektów o różnych wielkościach w obu reprezentacjach
+3. łatwość użycia funkcji
+    użyć funkcji z pakietu Spatstat i ich odpowiedników ze standardowej reprezentacji, zwrócić uwagę na funkcje które odpowiednika nie mają 
+
+    
+
