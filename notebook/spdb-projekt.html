@@ -373,16 +373,142 @@ summary {
 <div id="TOC">
 <ul>
 <li><a href="#wprowadzenie">Wprowadzenie</a><ul>
-<li><a href="#xd">xD</a></li>
+<li><a href="#zakres-i-cel-projektu">Zakres i cel projektu</a></li>
 </ul></li>
+<li><a href="#reprezentacja-danych">Reprezentacja danych</a><ul>
+<li><a href="#biblioteka-spatstat">Biblioteka <code>spatstat</code></a><ul>
+<li><a href="#ppp">ppp</a></li>
+<li><a href="#owin">owin</a></li>
+<li><a href="#im">im</a></li>
+<li><a href="#psp">psp</a></li>
+</ul></li>
+<li><a href="#biblioteka-sp">Biblioteka <code>sp</code></a><ul>
+<li><a href="#spatial">Spatial</a></li>
+<li><a href="#spatialpoints">SpatialPoints</a></li>
+<li><a href="#spatialpointsdataframe">SpatialPointsDataFrame</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#zależność-od-pakietów-zewnętrznych">Zależność od pakietów zewnętrznych</a></li>
+<li><a href="#wizualizacja-danych-przestrzennych">Wizualizacja danych przestrzennych</a></li>
+<li><a href="#konstrukcja-obiektów-geometrycznych">Konstrukcja obiektów geometrycznych</a><ul>
+<li><a href="#obiekty-podstawowe">Obiekty podstawowe</a></li>
+<li><a href="#obiekty-złożone">Obiekty złożone</a></li>
+</ul></li>
+<li><a href="#transformacje-układu-współrzędnych">Transformacje układu współrzędnych</a><ul>
+<li><a href="#typy-transformacji">Typy transformacji</a></li>
+<li><a href="#czas-wykonania">Czas wykonania</a></li>
+</ul></li>
+<li><a href="#zapis-i-wczytanie-danych">Zapis i wczytanie danych</a><ul>
+<li><a href="#operacje-wczytania-danych">Operacje wczytania danych</a><ul>
+<li><a href="#dostępne-formaty-danych">Dostępne formaty danych</a></li>
+<li><a href="#czas-wykonania-1">Czas wykonania</a></li>
+</ul></li>
+<li><a href="#operacje-zapisu-danych">Operacje zapisu danych</a><ul>
+<li><a href="#dostępne-formaty-danych-1">Dostępne formaty danych</a></li>
+<li><a href="#czas-wykonania-2">Czas wykonania</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#konwersje-typów">Konwersje typów</a></li>
 </ul>
 </div>
 
 <div id="wprowadzenie" class="section level1">
 <h1>Wprowadzenie</h1>
-<div id="xd" class="section level2">
-<h2>xD</h2>
+<div id="zakres-i-cel-projektu" class="section level2">
+<h2>Zakres i cel projektu</h2>
+<p>Niniejszy projekt skupia się na porównaniu ze sobą dwóch biblotek dedykowanych danym przestrzennym w języku R, tj.:</p>
+<ul>
+<li>biblotece <code>spatstat</code> (w wersji <code>1.62-2 Shape-shifting lizard</code>)</li>
+<li>biblotece <code>sp</code> (w wersji <code>1.3-2</code>).</li>
+</ul>
+<p>W projekcie zostaną porównane ze sobą reprezentacje danych przestrzennych przez obie bibloteki oraz ich zasób możliwości do</p>
+<ul>
+<li>wizualizacji</li>
+<li>przetwarzania</li>
+<li>transformacji układu współrzędnych</li>
+<li>odczytu i zapisu danych.</li>
+</ul>
+<p>W ramach przeprowadzonych porównań stosowane będą różne metryki – od tych wyrażalnych liczbowo jak czas wykonania lub zajętość pamięci po subiektywne odczucia użytkownika.</p>
+<p>W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. <em>user experience</em>)</p>
 </div>
+</div>
+<div id="reprezentacja-danych" class="section level1">
+<h1>Reprezentacja danych</h1>
+<div id="biblioteka-spatstat" class="section level2">
+<h2>Biblioteka <code>spatstat</code></h2>
+<div id="ppp" class="section level3">
+<h3>ppp</h3>
+</div>
+<div id="owin" class="section level3">
+<h3>owin</h3>
+</div>
+<div id="im" class="section level3">
+<h3>im</h3>
+</div>
+<div id="psp" class="section level3">
+<h3>psp</h3>
+</div>
+</div>
+<div id="biblioteka-sp" class="section level2">
+<h2>Biblioteka <code>sp</code></h2>
+<div id="spatial" class="section level3">
+<h3>Spatial</h3>
+</div>
+<div id="spatialpoints" class="section level3">
+<h3>SpatialPoints</h3>
+</div>
+<div id="spatialpointsdataframe" class="section level3">
+<h3>SpatialPointsDataFrame</h3>
+</div>
+</div>
+</div>
+<div id="zależność-od-pakietów-zewnętrznych" class="section level1">
+<h1>Zależność od pakietów zewnętrznych</h1>
+</div>
+<div id="wizualizacja-danych-przestrzennych" class="section level1">
+<h1>Wizualizacja danych przestrzennych</h1>
+</div>
+<div id="konstrukcja-obiektów-geometrycznych" class="section level1">
+<h1>Konstrukcja obiektów geometrycznych</h1>
+<div id="obiekty-podstawowe" class="section level2">
+<h2>Obiekty podstawowe</h2>
+</div>
+<div id="obiekty-złożone" class="section level2">
+<h2>Obiekty złożone</h2>
+</div>
+</div>
+<div id="transformacje-układu-współrzędnych" class="section level1">
+<h1>Transformacje układu współrzędnych</h1>
+<div id="typy-transformacji" class="section level2">
+<h2>Typy transformacji</h2>
+</div>
+<div id="czas-wykonania" class="section level2">
+<h2>Czas wykonania</h2>
+</div>
+</div>
+<div id="zapis-i-wczytanie-danych" class="section level1">
+<h1>Zapis i wczytanie danych</h1>
+<div id="operacje-wczytania-danych" class="section level2">
+<h2>Operacje wczytania danych</h2>
+<div id="dostępne-formaty-danych" class="section level3">
+<h3>Dostępne formaty danych</h3>
+</div>
+<div id="czas-wykonania-1" class="section level3">
+<h3>Czas wykonania</h3>
+</div>
+</div>
+<div id="operacje-zapisu-danych" class="section level2">
+<h2>Operacje zapisu danych</h2>
+<div id="dostępne-formaty-danych-1" class="section level3">
+<h3>Dostępne formaty danych</h3>
+</div>
+<div id="czas-wykonania-2" class="section level3">
+<h3>Czas wykonania</h3>
+</div>
+</div>
+</div>
+<div id="konwersje-typów" class="section level1">
+<h1>Konwersje typów</h1>
 </div>
 
 

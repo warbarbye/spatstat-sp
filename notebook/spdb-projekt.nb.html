@@ -1756,13 +1756,105 @@ summary {
 <!-- rnb-text-begin -->
 <div id="wprowadzenie" class="section level1">
 <h1>Wprowadzenie</h1>
-<div id="xd" class="section level2">
-<h2>xD</h2>
+<div id="zakres-i-cel-projektu" class="section level2">
+<h2>Zakres i cel projektu</h2>
+<p>Niniejszy projekt skupia się na porównaniu ze sobą dwóch biblotek dedykowanych danym przestrzennym w języku R, tj.:</p>
+<ul>
+<li>biblotece <code>spatstat</code> (w wersji <code>1.62-2 Shape-shifting lizard</code>)</li>
+<li>biblotece <code>sp</code> (w wersji <code>1.3-2</code>).</li>
+</ul>
+<p>W projekcie zostaną porównane ze sobą reprezentacje danych przestrzennych przez obie bibloteki oraz ich zasób możliwości do</p>
+<ul>
+<li>wizualizacji</li>
+<li>przetwarzania</li>
+<li>transformacji układu współrzędnych</li>
+<li>odczytu i zapisu danych.</li>
+</ul>
+<p>W ramach przeprowadzonych porównań stosowane będą różne metryki – od tych wyrażalnych liczbowo jak czas wykonania lub zajętość pamięci po subiektywne odczucia użytkownika.</p>
+<p>W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. <em>user experience</em>)</p>
+</div>
+</div>
+<div id="reprezentacja-danych" class="section level1">
+<h1>Reprezentacja danych</h1>
+<div id="biblioteka-spatstat" class="section level2">
+<h2>Biblioteka <code>spatstat</code></h2>
+<div id="ppp" class="section level3">
+<h3>ppp</h3>
+</div>
+<div id="owin" class="section level3">
+<h3>owin</h3>
+</div>
+<div id="im" class="section level3">
+<h3>im</h3>
+</div>
+<div id="psp" class="section level3">
+<h3>psp</h3>
+</div>
+</div>
+<div id="biblioteka-sp" class="section level2">
+<h2>Biblioteka <code>sp</code></h2>
+<div id="spatial" class="section level3">
+<h3>Spatial</h3>
+</div>
+<div id="spatialpoints" class="section level3">
+<h3>SpatialPoints</h3>
+</div>
+<div id="spatialpointsdataframe" class="section level3">
+<h3>SpatialPointsDataFrame</h3>
+</div>
+</div>
+</div>
+<div id="zależność-od-pakietów-zewnętrznych" class="section level1">
+<h1>Zależność od pakietów zewnętrznych</h1>
+</div>
+<div id="wizualizacja-danych-przestrzennych" class="section level1">
+<h1>Wizualizacja danych przestrzennych</h1>
+</div>
+<div id="konstrukcja-obiektów-geometrycznych" class="section level1">
+<h1>Konstrukcja obiektów geometrycznych</h1>
+<div id="obiekty-podstawowe" class="section level2">
+<h2>Obiekty podstawowe</h2>
+</div>
+<div id="obiekty-złożone" class="section level2">
+<h2>Obiekty złożone</h2>
+</div>
+</div>
+<div id="transformacje-układu-współrzędnych" class="section level1">
+<h1>Transformacje układu współrzędnych</h1>
+<div id="typy-transformacji" class="section level2">
+<h2>Typy transformacji</h2>
+</div>
+<div id="czas-wykonania" class="section level2">
+<h2>Czas wykonania</h2>
+</div>
+</div>
+<div id="zapis-i-wczytanie-danych" class="section level1">
+<h1>Zapis i wczytanie danych</h1>
+<div id="operacje-wczytania-danych" class="section level2">
+<h2>Operacje wczytania danych</h2>
+<div id="dostępne-formaty-danych" class="section level3">
+<h3>Dostępne formaty danych</h3>
+</div>
+<div id="czas-wykonania-1" class="section level3">
+<h3>Czas wykonania</h3>
+</div>
+</div>
+<div id="operacje-zapisu-danych" class="section level2">
+<h2>Operacje zapisu danych</h2>
+<div id="dostępne-formaty-danych-1" class="section level3">
+<h3>Dostępne formaty danych</h3>
+</div>
+<div id="czas-wykonania-2" class="section level3">
+<h3>Czas wykonania</h3>
+</div>
+</div>
+</div>
+<div id="konwersje-typów" class="section level1">
+<h1>Konwersje typów</h1>
 <!-- rnb-text-end -->
 </div>
-</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJ6ZXN0cnplbm5lIGJhenkgZGFueWNoOiBwb3LDs3duYW5pZSBiaWJsaW90ZWsgYHNwYXRzdGF0YCBvcmF6IGBzcGAiCmF1dGhvcjogCiAgICAtIEFsZWtzYW5kcmEgRHppZW5pc3pld3NrYQogICAgLSBFcnlrIFdhcmNodWxza2tpCmRhdGU6IHgKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICB0b2M6IHRydWUKICAgIHRvY19kZXB0aDogMgotLS0KCgojIFdwcm93YWR6ZW5pZSAKIyMgeEQKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJ6ZXN0cnplbm5lIGJhenkgZGFueWNoOiBwb3LDs3duYW5pZSBiaWJsaW90ZWsgYHNwYXRzdGF0YCBvcmF6IGBzcGAiCmF1dGhvcjogCiAgICAtIEFsZWtzYW5kcmEgRHppZW5pc3pld3NrYQogICAgLSBFcnlrIFdhcmNodWxza2tpCmRhdGU6IHgKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICB0b2M6IHRydWUKICAgIHRvY19kZXB0aDogMwotLS0KCgojIFdwcm93YWR6ZW5pZSAKIyMgWmFrcmVzIGkgY2VsIHByb2pla3R1CgoKTmluaWVqc3p5IHByb2pla3Qgc2t1cGlhIHNpxJkgbmEgcG9yw7N3bmFuaXUgemUgc29ixIUgZHfDs2NoIGJpYmxvdGVrIGRlZHlrb3dhbnljaCBkYW55bSBwcnplc3RyemVubnltIHcgasSZenlrdSBSLCB0ai46CgoqIGJpYmxvdGVjZSBgc3BhdHN0YXRgICh3IHdlcnNqaSBgMS42Mi0yIFNoYXBlLXNoaWZ0aW5nIGxpemFyZGApCiogYmlibG90ZWNlIGBzcGAgKHcgd2Vyc2ppIGAxLjMtMmApLgoKClcgcHJvamVrY2llIHpvc3RhbsSFIHBvcsOzd25hbmUgemUgc29ixIUgcmVwcmV6ZW50YWNqZSBkYW55Y2ggcHJ6ZXN0cnplbm55Y2ggcHJ6ZXogb2JpZSBiaWJsb3Rla2kgb3JheiBpY2ggemFzw7NiIG1vxbxsaXdvxZtjaSBkbwoKLSB3aXp1YWxpemFjamkKLSBwcnpldHdhcnphbmlhCi0gdHJhbnNmb3JtYWNqaSB1a8WCYWR1IHdzcMOzxYJyesSZZG55Y2ggCi0gb2Rjenl0dSBpIHphcGlzdSBkYW55Y2guCgpXIHJhbWFjaCBwcnplcHJvd2Fkem9ueWNoIHBvcsOzd25hxYQgc3Rvc293YW5lIGLEmWTEhSByw7PFvG5lIG1ldHJ5a2kgLS0gb2QgdHljaCB3eXJhxbxhbG55Y2ggbGljemJvd28gamFrIGN6YXMgd3lrb25hbmlhIGx1YiB6YWrEmXRvxZvEhyBwYW1pxJljaSBwbyBzdWJpZWt0eXduZSBvZGN6dWNpYSB1xbx5dGtvd25pa2EuIAoKClcgc2VrY2ppIHBpZXJ3c3plaiBvbcOzd2lvbmEgem9zdGFuaWUgcmVwcmV6ZW50YWNqYSBkYW55Y2ggcHJ6ZXN0cnplbm55Y2gsIGt0w7NyYSB3eXN0xJlwdWplIHcgYmFkYW55Y2ggcGFraWV0YWNoLCBvcmF6IHphbWllc3pjem9uYSBqZXN0IHRhbSBrcsOzdGthIGNoYXJha3RlcnlzdHlrYSBvYnUgcGFraWV0w7N3LiBTZWtjamEgZHJ1Z2EgZG90eWN6eSBrd2VzdGlpIHphbGXFvG5vxZtjaSBiaWJsb3RlayBvZCBiaWJsb3RlayB6ZXduxJl0cnpueWNoLiBTZWtjamEgdHJ6ZWNpYSBpIGN6d2FydGEgb21hd2lhIGtvbGVqbm86IG1ldG9keSB3aXp1YWxpemFjamkgb3JheiBrb25zdHJ1a2NqZSBvYmlla3TDs3cgZ2VvbWV0cnljem55Y2guIFpiYWRhbnkgdGFtIHpvc3RhbmllIGkgb23Ds3dpb255IHpvc3RhbmllIGN6YXMgd3lrb25hbmlhIG9yYXogVVggKGFuZy4gX3VzZXIgZXhwZXJpZW5jZV8pIAoKCiMgUmVwcmV6ZW50YWNqYSBkYW55Y2ggCiMjIEJpYmxpb3Rla2EgYHNwYXRzdGF0YAojIyMgcHBwCiMjIyBvd2luCiMjIyBpbQojIyMgcHNwIAojIyBCaWJsaW90ZWthIGBzcGAKIyMjIFNwYXRpYWwKIyMjIFNwYXRpYWxQb2ludHMKIyMjIFNwYXRpYWxQb2ludHNEYXRhRnJhbWUKIyBaYWxlxbxub8WbxIcgb2QgcGFraWV0w7N3IHpld27EmXRyem55Y2gKIyBXaXp1YWxpemFjamEgZGFueWNoIHByemVzdHJ6ZW5ueWNoCiMgS29uc3RydWtjamEgb2JpZWt0w7N3IGdlb21ldHJ5Y3pueWNoCiMjIE9iaWVrdHkgcG9kc3Rhd293ZQojIyBPYmlla3R5IHrFgm/FvG9uZQojIFRyYW5zZm9ybWFjamUgdWvFgmFkdSB3c3DDs8WCcnrEmWRueWNoCiMjIFR5cHkgdHJhbnNmb3JtYWNqaQojIyBDemFzIHd5a29uYW5pYQojIFphcGlzIGkgd2N6eXRhbmllIGRhbnljaAojIyBPcGVyYWNqZSB3Y3p5dGFuaWEgZGFueWNoCiMjIyBEb3N0xJlwbmUgZm9ybWF0eSBkYW55Y2gKIyMjIEN6YXMgd3lrb25hbmlhIAojIyBPcGVyYWNqZSB6YXBpc3UgZGFueWNoCiMjIyBEb3N0xJlwbmUgZm9ybWF0eSBkYW55Y2gKIyMjIEN6YXMgd3lrb25hbmlhIAojIEtvbndlcnNqZSB0eXDDs3cK</div>
 
 
 
