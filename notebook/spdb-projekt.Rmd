@@ -31,7 +31,7 @@ W projekcie zostaną porównane ze sobą reprezentacje danych przestrzennych prz
 W ramach przeprowadzonych porównań stosowane będą różne metryki -- od tych wyrażalnych liczbowo jak czas wykonania lub zajętość pamięci po subiektywne odczucia użytkownika. 
 
 
-W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. _user experience_) 
+W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. _user experience_). Sekcja piąta dotyczy transformacji układu współrzędnych, a sekcja szósta -- metod zapisu o dycztu danych. Sekcja przedostatnia -- siódma -- traktować będzie o transformacjach między natywnymi typami języka `R` oraz między obiema biblotekami. Dokument zakończony jest podsumowaniem i wnioskami, płynącymi z użytkowania obu pakietów.  
 
 
 # Reprezentacja danych 
