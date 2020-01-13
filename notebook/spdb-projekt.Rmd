@@ -1,0 +1,41 @@
+---
+title: "Przestrzenne bazy danych: porównanie bibliotek `spatstat` oraz `sp`"
+author: 
+    - Aleksandra Dzieniszewska
+    - Eryk Warchulskki
+date: x
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+---
+
+
+# Wprowadzenie 
+## Zakres i cel projektu
+# Reprezentacja danych 
+## Biblioteka `spatstat`
+### ppp
+### owin
+### im
+### psp 
+## Biblioteka `sp`
+### Spatial
+### SpatialPoints
+### SpatialPointsDataFrame
+# Zależność od pakietów zewnętrznych
+# Wizualizacja danych przestrzennych
+# Konstrukcja obiektów geometrycznych
+## Obiekty podstawowe
+## Obiekty złożone
+# Transformacje układu współrzędnych
+## Typy transformacji
+## Czas wykonania
+# Zapis i wczytanie danych
+## Operacje wczytania danych
+### Dostępne formaty danych
+### Czas wykonania 
+## Operacje zapisu danych
+### Dostępne formaty danych
+### Czas wykonania 
+# Konwersje typów
