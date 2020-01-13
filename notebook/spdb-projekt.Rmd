@@ -5,7 +5,7 @@ author:
     - Eryk Warchulskki
 date: x
 output:
-  html_document:
+  html_notebook:
     toc: true
     toc_depth: 3
 ---
@@ -31,19 +31,224 @@ W projekcie zostaną porównane ze sobą reprezentacje danych przestrzennych prz
 W ramach przeprowadzonych porównań stosowane będą różne metryki -- od tych wyrażalnych liczbowo jak czas wykonania lub zajętość pamięci po subiektywne odczucia użytkownika. 
 
 
-W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. _user experience_). Sekcja piąta dotyczy transformacji układu współrzędnych, a sekcja szósta -- metod zapisu o dycztu danych. Sekcja przedostatnia -- siódma -- traktować będzie o transformacjach między natywnymi typami języka `R` oraz między obiema biblotekami. Dokument zakończony jest podsumowaniem i wnioskami, płynącymi z użytkowania obu pakietów.  
+W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. _user experience_). Sekcja piąta dotyczy transformacji układu współrzędnych, a sekcja szósta -- metod zapisu o dycztu danych. Sekcja przedostatnia -- siódma -- traktować będzie o transformacjach między natywnymi typami języka `R` oraz między obiema biblotekami. Dokument zakończony jest podsumowaniem, wnioskami, płynącymi z użytkowania obu pakietów, oraz biblografią użytą przez autorów w ramach źródła informacji. 
 
 
 # Reprezentacja danych 
 ## Biblioteka `spatstat`
+
+Bibloteka `spatstat` stanowi zbiór funkcji dedykowanych danym przestrzennym. Dokumentacja bibloteki złożona jest z ponad $1700$ stron, co daje około $850$ różnych funkcji. Po samej liczbie dostępnych metod można dojść do wniosku, że pakiet ten oferuje znacznie więcej, niż konstrukcje, wizualizacje czy zapis/odczyt danych przestrzennych. `Spatstat` wspiera m.in.:
+
+- eksploracyjną analizę danych
+- modelowanie (wraz z audytem uzyskanych modeli) oraz wnioskowanie statystyczne 
+- symulacje dwuwymiarowych procesów stochastycznych (t.zw. pól losowych).
+
+W projekcie te aspekty pakietu nie zostaną omówione, ponieważ pakiet `sp` nie zawiera żadnych metod, które pozwalałyby realizować powyższe zagadnienia.
+
+
+*Reprezentacja danych* w omawianym pakiecie opiera się na czterech klasach zaimplementowanych w prostym systemie obiektowości języka `R`, tj. w systemie `S3`. System ten opiera się na funkcjach generycznych i przez to różni się od systemów obiektowości spotykanych we współczesnych językach obiektowych lub wspierających obiektowość (`Java` lub `Python`) opartą na t.zw. _message-passing_. 
+
+Klasy służące do reprezentacji obiektów przestrzennych w biblotece `spatstat` są następujące:
+
+1. Klasa `ppp`
+2. Klasa `owin`
+3. Klasa `im`
+4. Klasa `psp`
+
+Poniżej zostanie scharakteryzowana każda z klas.
+
 ### ppp
+
+Klasa `ppp` reprezentuje jeden z obiektów geometrycznych modelowanych przez system typów bibloteki `spatstat`, tj. zbiór punktów (na płaszczyźnie). 
+
+Obiekt `ppp` tworzony jest przez konstruktor `spatstat::ppp()`, który przyjmuje jako parametry koordynaty przestrzenne (`x`, `y`) oraz -- opcjonalnie -- etykietki przyporządkowane punktom (`marks`). Na obiekty `marks` nałożona jest warunek bycia reprezentantem typu `factor` (typ podstawowy języka `R`, który służy do reprezentacji wielkości kategorycznych). Ponadto, z każdym obiektem `ppp` związane jest _okno_, w którym ten obiekt się znajduje, tj. dwuwymiarowa płaszczyzna. Konstruktor obiektu w przypadku braku specyfikacji okna (obiekt typu `owin` jest omawiany w następnej podsekcji) umieszcza punkty w oknie $[0, 1]^{2}$, a te których koordynaty przestrzenne wykraczają poza domyślny obszar -- usuwa. 
+
+Z obiektami typu `ppp` związane są następujące funkcje:
+
+* `spatstat::as.ppp()` 
+* `spatstat::plot.ppp()`
+* `spatstat::summary.ppp()`
+* `spatstat::scapp()`
+
+
+Sposób utworzenia i wykonywania pewnych operacji na tym typie prezentuje poniższy listing:
+
+
+```{R}
+library(magrittr)
+
+points_number = 50
+
+points = points_number %>% spatstat::ppp(x = runif(.), y = runif(.), xrange = c(0, 1), yrange = c(0, 1))
+
+points 
+
+points %>% summary()
+
+points %>% plot("Punkty")
+
+
+```
+
+
 ### owin
+
+Klasa `owin` reprezentuje jeden z obiektów geometrycznych modelowanych przez system typów bibloteki `spatstat`, tj. dwuwymiarową płaszczyznę. 
+
+Obiekt `owin` tworzony jest przez konstruktor `spatstat::owin()` i wyróżnia się trzy podtypy tego obiektu: 
+
+* `rectangle` (prostokąt)
+* `polygonal` (wielokąt)
+* `mask` (macierz z wartościami w zbiorze ${0, 1}$)
+
+Obiekty typu `owin` mogą przyjmować dowolny kształt, być wizualizowane bez naniesionych punktów oraz dostępne są specyficzne dla powierzchni metody jak:
+
+
+* `spatstat::as.ppp()` 
+* `spatstat::plot.ppp()`
+* `spatstat::summary.ppp()`
+* `spatstat::area.owin()` 
+* `spatstat::aperimeter()` 
+* `spatstat::adiameter.owin()`
+* `spatstat::boundingbox()`
+
+Sposób utworzenia i wykonywania pewnych operacji na tym typie prezentuje poniższy listing:
+
+```{R}
+
+window = spatstat::owin(xrange = c(0, 3), yrange = c(0, 5))
+
+window %>% spatstat::area()
+
+window %>% plot(main = "Okno")
+
+```
+
 ### im
+
+Klasa `im` reprezentuje dwuwymiarowy obraz złożony z pikseli. 
+
+Obiekt `im` tworzony jest przez konstruktor `spatstat::im()`, który przyjmuje jako parametry wejściowe:
+
+* macierz wartości `v` oraz jej wymiarowość `dim` 
+* szerokość `xrange` oraz długość `yrange` okna, które obejmuje obraz 
+* szerokość `xstep` oraz długość `ystep` piksela 
+* wektor koordynatów określających centra pikseli `xcol` oraz `yrow`
+
+
+ 
+ 
+Sposób utworzenia obiektu `im` prezentuje poniższy listing:
+
+
+```{R}
+
+value_mat = matrix(runif(100), nrow=30, ncol=40)
+
+pixel_image = spatstat::im(value_mat) 
+
+pixel_image %>% plot(main = 'Szum bialy')
+
+```
+
 ### psp 
-## Biblioteka `sp`
-### Spatial
+
+Klasa `psp` reprezentuje linię i jest typem pochodnym typu `ppp`. Obiekt `psp` tworzony jest przez konstruktor `spatstat::psp()`.
+
+Sposób utworzenia powyższego typu prezentuje poniższy listing:
+
+```{R}
+segment_line = psp(x0 = runif(1), y0 = runif(1), x1 = runif(1), y1= runif(1), window=owin())
+
+segment_line %>% plot(main="Linia")
+
+```
+
+## Bibloteka `sp`
+
+Bibloteka `sp` jest pakietem funkcji dedykowanych ściśle pod wizualizacje oraz transformacje danych przestrzennych. Pakiet ten nie wspiera czynności dodatkowych, które można wykonywać na danych przestrzennych jak modelowanie lub przeprowadzenie symulacji. 
+
+Oparty jest on na innym systemie klas niż pakiet `spatstat` -- na znacznie bardziej złożonym i formalnie ścisłym systemie `S4`. 
+
+*Reprezentacja danych* w biblotece `sp` oparta jest na 7 klasach w wersji bez dodatkowych atrybutów numerycznych lub kategorycznych (np. `SpatialPoints`) lub z dodatkowymi atrybutami (np. `SpatialPointsDataFrame`). Ponadto, w proponowanym systemie klas przez `sp` istnieje klasa abstrakcyjna `Spatial`, która zawiera metadane wspólnego dla każdego obiektu geometrycznego tej bibloteki.
+
+Poniżej zostaną omówione wszystkie dostępne klasy w wersji dodatkowych atrybutów z wyłączeniem klasy `SpatialPointsDataFrame`, co wynika z faktu bardzo podobnego sposobu konstruowania obiektów tego rodzaju przy użyciu standardowych konstruktorów.
+
+### Spatial 
+
+Klasa abstrakcyjna `Spatial` zawiera następujące metody abstrakcyjne: 
+
+* `sp::dimensions()`
+* `sp::bbox()`
+* `sp::coordinates()`
+* `sp::spplot()`
+* `sp::dimensions()`
+
+
 ### SpatialPoints
-### SpatialPointsDataFrame
+
+Konstrukcja obiektu `SpatialPoints` odbywa się przy pomocy konstruktura `sp::SpatialPoints()`, który jako parametr wejściowy przyjmuje `coords`, będący macierzą (lub ramką danych `data.frame`) $n$-wymiarową.
+
+W przypadku potrzeby konstrukcji obiektu z dodatkowymi danymi, tj. typów `Spatial_DataFrame`, konstruktor przyjmuje parametr `data`, będący obiektem typu `data.frame` o liczbie wierszy równej `coords`.
+
+
+W pakiecie istnieje również klasa `SpatialMultiPoint`, która jest rozszerzeniem `SpatialPoints` o możliwość przechowywania koordynatów wielu punktów, tj. 
+
+```{R}
+SpatialMultiPoints(list(
+                    cbind(rnorm(3, 10), rnorm(3, 10)), # koordynaty 1...
+                    cbind(rnorm(5, 10), rnorm(5, 0)) # koordynaty 2...
+                    ))
+```
+
+Utworzenie `SpatialPoints` prezentuje poniższy listing:
+
+```{R}
+library(tidyverse)
+
+coordinates = tibble::tibble(x1 = runif(10), x2 = runif(10), x3 = runif(10))
+
+points = coordinates %>% sp::SpatialPoints()
+
+points 
+
+points %>% plot()
+
+```
+
+
+Natomiast utworzenie `SpatialPointsDataFrame` wygląda następująco:
+
+```{R}
+
+coordinates = tibble::tibble(x1 = runif(10), x2 = runif(10), x3 = runif(10))
+
+random_data = tibble::tibble(height = runif(10), weight = runif(10), iq = runif(10))
+
+points = coordinates %>% sp::SpatialPointsDataFrame(data = random_data)
+
+points %>% summary()
+
+points %>% spplot()
+
+```
+
+### Grid
+    Klasa `SpatialGrid` oraz `SpatialPixels` reprezentują obiekty geometryczne typu siatka/krata przy czym obiekty klasy `SpatialGrid` nie przechowują koordynatów przestrzennych.
+    
+    
+    
+### SpatialPixels
+### SpatialGrid
+### Line 
+### Lines
+### SpatialLines
+### Polygon
+### Polygons
+### SpatialPolygons
+
+
+## Uwagi
 # Zależność od pakietów zewnętrznych
 # Wizualizacja danych przestrzennych
 # Konstrukcja obiektów geometrycznych

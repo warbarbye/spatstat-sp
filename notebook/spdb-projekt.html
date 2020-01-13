@@ -429,15 +429,43 @@ summary {
 <li>odczytu i zapisu danych.</li>
 </ul>
 <p>W ramach przeprowadzonych porównań stosowane będą różne metryki – od tych wyrażalnych liczbowo jak czas wykonania lub zajętość pamięci po subiektywne odczucia użytkownika.</p>
-<p>W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. <em>user experience</em>)</p>
+<p>W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. <em>user experience</em>). Sekcja piąta dotyczy transformacji układu współrzędnych, a sekcja szósta – metod zapisu o dycztu danych. Sekcja przedostatnia – siódma – traktować będzie o transformacjach między natywnymi typami języka <code>R</code> oraz między obiema biblotekami. Dokument zakończony jest podsumowaniem, wnioskami, płynącymi z użytkowania obu pakietów, oraz biblografią użytą przez autorów w ramach źródła informacji.</p>
 </div>
 </div>
 <div id="reprezentacja-danych" class="section level1">
 <h1>Reprezentacja danych</h1>
 <div id="biblioteka-spatstat" class="section level2">
 <h2>Biblioteka <code>spatstat</code></h2>
+<p>Bibloteka <code>spatstat</code> stanowi zbiór funkcji dedykowanych danym przestrzennym. Dokumentacja bibloteki złożona jest z ponad <span class="math inline">\(1700\)</span> stron, co daje około <span class="math inline">\(850\)</span> różnych funkcji. Po samej liczbie dostępnych metod można dojść do wniosku, że pakiet ten oferuje znacznie więcej, niż konstrukcje, wizualizacje czy zapis/odczyt danych przestrzennych. <code>Spatstat</code> wspiera m.in.:</p>
+<ul>
+<li>eksploracyjną analizę danych</li>
+<li>modelowanie (wraz z audytem uzyskanych modeli) oraz wnioskowanie statystyczne</li>
+<li>symulacje dwuwymiarowych procesów stochastycznych (t.zw. pól losowych).</li>
+</ul>
+<p>W projekcie te aspekty pakietu nie zostaną omówione, ponieważ pakiet <code>sp</code> nie zawiera żadnych metod, które pozwalałyby realizować powyższe zagadnienia.</p>
+<p><em>Reprezentacja danych</em> w omawianym pakiecie opiera się na czterech klasach zaimplementowanych w prostym systemie obiektowości języka <code>R</code>, tj. w systemie <code>S3</code>. System ten opiera się na funkcjach generycznych i przez to różni się od systemów obiektowości spotykanych we współczesnych językach obiektowych lub wspierających obiektowość (<code>Java</code> lub <code>Python</code>) opartą na t.zw. <em>message-passing</em>.</p>
+<p>Klasy służące do reprezentacji obiektów przestrzennych w biblotece <code>spatstat</code> są następujące:</p>
+<ol style="list-style-type: decimal">
+<li>Klasa <code>ppp</code></li>
+<li>Klasa <code>owin</code></li>
+<li>Klasa <code>im</code></li>
+<li>Klasa <code>psp</code></li>
+</ol>
+<p>Poniżej zostanie scharakteryzowana każda z klas.</p>
 <div id="ppp" class="section level3">
 <h3>ppp</h3>
+<p>Klasa <code>ppp</code> reprezentuje jeden z obiektów geometrycznych modelowanych przez system typów bibloteki <code>spatstat</code>, tj. zbiór punktów (na płaszczyźnie).</p>
+<p>Obiekt <code>ppp</code> tworzony jest przez konstruktor <code>spatstat::ppp()</code>, który przyjmuje jako parametry koordynaty przestrzenne (<code>x</code>, <code>y</code>) oraz – opcjonalnie – etykietki przyporządkowane punktom (<code>marks</code>). Na obiekty <code>marks</code> nałożona jest warunek bycia reprezentantem typu <code>factor</code> (typ podstawowy języka <code>R</code>, który służy do reprezentacji wielkości kategorycznych). Ponadto, z każdym obiektem <code>ppp</code> związane jest <em>okno</em>, w którym ten obiekt się znajduje, tj. dwuwymiarowa płaszczyzna. Konstruktor obiektu w przypadku braku specyfikacji okna (obiekt typu <code>owin</code> jest omawiany w następnej podsekcji) umieszcza punkty w oknie <span class="math inline">\([0, 1]^{2}\)</span>, a te których koordynaty przestrzenne wykraczają poza domyślny obszar – usuwa.</p>
+<p>Z obiektami typu <code>ppp</code> związane są następujące funkcje:</p>
+<ul>
+<li><code>spatstat::as.ppp()</code></li>
+<li><code>spatstat::plot.ppp()</code></li>
+<li><code>spatstat::summary.ppp()</code></li>
+<li><code>spatstat::scapp()</code></li>
+</ul>
+<p>Sposób utworzenia i wykonywania pewnych operacji na tym typie prezentuje poniższy listing:</p>
+<pre class="r"><code>sum(1:5)
+</code></pre>
 </div>
 <div id="owin" class="section level3">
 <h3>owin</h3>
