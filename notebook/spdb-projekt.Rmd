@@ -297,15 +297,82 @@ Wydaje się, że domyślne parametry obiektu `owin` powinny być zależne od min
 Na korzyść pakietu `sp` jest również sposób tworzenia łamanych, który jest intuicyjny i w nieznaczny sposób różni się od tworzenia obiektów `polygon`.
 
 # Zależność od pakietów zewnętrznych
-TODO
+
+Istotnym aspektem pakietów tworzonych w ekosystemie języka `R` jest ich zależność od pakietów zewnętrznych. Przy czym im ta zależność jest mniejsza, tym jest lepiej. Związane jest to ściśle z faktem:
+
+* częstym brakiem kompatybilności wstecznej między nowymi wersjami interpreta języka, a pakietami zewnętrznymi 
+* braku aktualizacji pakietów przez ich twórców w przypadku nowej wersji interpretera lub zmiany API pakietu zewnętrznego.
+
+
+Biblioteka `spatstat` zależy od następujących pakietów zewnętrznych:
+
+- `stats`
+
+- `graphics`
+
+- `grDevices`
+
+- `utils`
+
+- `methods`
+
+- `nlme`
+
+- `rpart`
+
+przy czym tylko pakiety `nlme` oraz `rpart` nie posiadają priorytetu *base* co oznacza, że nie muszą być ściśle kompatibylne z aktualną wersją interpretera. Ich aktualizacja lub jej brak może być źródłem błędów w działaniu pakietu. 
+
+`Spatstat` ponadto sugeruje, aby zainstalowane były następujace pakiety zewnętrzne: `sm, maptools, gsl, locfit, spatial,`
+`rpanel, tkrplot, RandomFields (>= 3.1.24.1), RandomFieldsUtils(>= 0.3.3.1), fftwtools (>= 0.9-8)`, co nie jest dziwne w kontekście liczby funkcji oferowanych przez pakiet, ale znacznie zwiększa prawdopodobieństwo wystąpienia błędu, który będzie ciężki do wykrycia i naprawienia przez użytkownika.
+
+Biblioteka `sp` zależy wyłącznie od pakietu `methods`, który posiada priorytet *base*, oraz sugeruje użycie niewielu pakietów zewnętrznych, tj.:
+`RColorBrewer, rgdal (>= 0.8-7), rgeos (>= 0.3-13), gstat, maptools, deldir`.
+
+W obrębie pakietu `sp` pewnym uniedogodnieniem dla użytkowników systemu `macOS` w wersji `Maverick` lub starszej był brak możliwości instalacji pakietu `rgdal` (pakiet odpowiedzialny za operacje IO) oraz `rgeos` (pakiet odpowiedzialny za operacje topologiczne na geometriach) z oficjalnego repozytorium pakietów CRAN. 
+
+
+## Uwagi 
+
+Pakiet `sp` zawiera znacznie mniejszą liczbę pakietów zewnętrznyc od których uzależnione jest jego działanie, co znacznie zmniejsza ryzyko wystąpienia błędu z powodu braku kompatybilności.
+
 # Wizualizacja danych przestrzennych
-TODO
-# Konstrukcja obiektów geometrycznych
-TODO
-## Obiekty podstawowe
-TODO
-## Obiekty złożone
-TODO
+
+Oba pakiety implementują własną wersję generycznej funkcji `plot()`. W sekcji tej zostaną porównane implementacje tych funkcji pod kątem czasu działania dla różnych rozmiarów danych przestrzennych. Omówiona zostanie ponadto funkcja `sp::spplot()` oraz szereg specyficznych funkcji z pakietu `spatstat`, które służą do rysowania obiektów geometrycznych.
+
+## Rysowanie prostych obiektów geometrycznych
+
+
+get_points = function(.num, .package) { 
+    if(.package == "sp")
+        sp::SpatialPoints(cbind(runif(.num), runif(.num)))
+    else
+        spatstat::ppp(x = runif(.num), y = runif(.num), xrange = c(0, 1), yrange = c(0, 1))
+}
+
+
+plot_points = function(.num, .package = "sp") { 
+        get_points(.num, .package) %T>% plot()
+        dev.off()
+}
+
+do_benchmark = function(.f, ...) {
+    microbenchmark::microbenchmark(.f(...)) %>%
+        dplyr::transmute(time = time*10^(-6)) %>%
+        dplyr::transmute(mean = mean(time),
+                      median = median(time),
+                      max = max(time),
+                      min = min(time)) %>% 
+        dplyr::pluck(1)
+}
+
+#sp_benchmark = list(small = do_benchmark(plot_points, 10),
+#                    medium = do_benchmark(plot_points, 1000),
+#                    large = do_benchmark(plot_points, 100000))
+
+
+
+## Uwagi
+
 # Transformacje układu współrzędnych
 TODO
 ## Typy transformacji
