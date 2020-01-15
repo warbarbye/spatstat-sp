@@ -248,7 +248,7 @@ summary(grid_object)
 grid_object %>% plot("Siatka")
 ```
 
-### Line 
+### Line, Lines, SpatialLines
 
 Obiekt klasy `Line` reprezentują łamaną, która jest tworzona przez podanie wektorów dwóch współprzędnych do konstruktura `sp::Line()`. W celu utworzenia obiektu, który daje się wizualizować należy wywołać konstruktor `sp::SpatialLines()`, który jako parametr wejściowy przyjmuje listę obiektów `sp::Lines()`, a ta z kolei tworzona jest z list obiektów typu `Line`. Możliwe jest również dodanie atrybutów w postaci ramki danych, aby utworzyć obiekt `SpatialLinesDataFrame`. 
 
@@ -269,39 +269,32 @@ sp_final_line %>% plot(main = "Linia <(1, 3), (2, 2), (3, 2)>")
 ```
 
 
-### Polygon
-TODO
-### Polygons
-TODO
-### SpatialPolygons
-TODO
+### Polygon, Polygons, SpatialPolygons
+
+Obiekt klasy `Polygon` służy do reprezentacji wielokątów i jest konstruowany w sposób podobny do obiektu typu `Line`, tj. podania wektorów koordynatów dla współrzędnej $x$ oraz $y$. Po utworzeniu obiektu typu `Polygon` tworzony jest obiekt `Polygons`, zawierający listę obiektów `Polygon` oraz obligatoryjny identyfikator obiektu.
+
+
+```{R}
+polygon = sp::Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2))) 
+polygons = sp::Polygons(list(polygon), ID = "polygon_102")
+spatial_polygons = sp::SpatialPolygons(list(polygons))
+
+spatial_polygons %>% plot(main = "Wielobok")
+            
+
+```
+
 ## Uwagi
-TODO
+
+Reprezentacja obiektów przestrzennych oferowana przez pakiet `sp` jest znacznie bogatsza oraz jest oparta na bardziej złożonym systemie klas, niż reprezentacja w pakiecie `spatstat`. 
+
+Sposób tworzenia obiektów w obu bibliotekach jest do siebie dosyć zbliżony, tj. przez podanie koordynatów przestrzennych w postaci wektora liczb rzeczywistych. W tej kwestii na korzyść pakietu `sp` przemawia bardzo łatwy sposób tworzenia obiektów przestrzennych o wymiarowości większej niż dwa. Typy biblioteki `spatstat` jak np. `ppp` ograniczony jest wyłącznie do dwóch wymiarów. W najnowszych wersjach pakietu `spatstat` istnieje co prawda typ `pp3`, w którym można tworzyć punkty trójwymiarowe lub typ `ppx` dedykowany do obiektów wielowymiarowych z dodatkowym wymiarem czasu, lecz typ ofery przez pakiet `sp` jest znacznie bardziej naturalny.
 
 
+Dosyć niewygodnym aspektem pakietu `spatstat` przy tworzeniu obiektów `ppp` jest konieczność specyfikowania płaszczyzny, w której punkty są zawarte. W przypadku, w którym użytkownik losuje punkty z rozkładu o nieograniczonym nośniku lewo- i/lub prawostronnie, taka konieczność specyfikacji jest uciążliwa. 
+Wydaje się, że domyślne parametry obiektu `owin` powinny być zależne od minimalnych i maksymalnych parametrów obiektu `ppp`.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Na korzyść pakietu `sp` jest również sposób tworzenia łamanych, który jest intuicyjny i w nieznaczny sposób różni się od tworzenia obiektów `polygon`.
 
 # Zależność od pakietów zewnętrznych
 TODO
