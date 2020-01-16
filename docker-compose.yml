@@ -1,0 +1,13 @@
+version: "3"
+services:
+        spdb-jup:
+                build: 
+                        context: . 
+                ports: 
+                          - "8889:8888"
+                volumes:
+                          - ./src:/home/jovyan/src
+                          - ./data:/home/jovyan/data
+                          - ./notebook:/home/jovyan/notebook
+                environment:
+                        JUPYTER_ENABLE_LAB: "yes"

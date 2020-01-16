@@ -3,7 +3,6 @@ title: "Przestrzenne bazy danych: porównanie bibliotek `spatstat` oraz `sp`"
 author: 
     - Aleksandra Dzieniszewska
     - Eryk Warchulskki
-date: x
 output:
   html_notebook:
     toc: true
@@ -31,8 +30,46 @@ W projekcie zostaną porównane ze sobą reprezentacje danych przestrzennych prz
 W ramach przeprowadzonych porównań stosowane będą różne metryki -- od tych wyrażalnych liczbowo jak czas wykonania lub zajętość pamięci po subiektywne odczucia użytkownika. 
 
 
-W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. _user experience_). Sekcja piąta dotyczy transformacji układu współrzędnych, a sekcja szósta -- metod zapisu o dycztu danych. Sekcja przedostatnia -- siódma -- traktować będzie o transformacjach między natywnymi typami języka `R` oraz między obiema biblotekami. Dokument zakończony jest podsumowaniem, wnioskami, płynącymi z użytkowania obu pakietów, oraz biblografią użytą przez autorów w ramach źródła informacji. 
+W sekcji pierwszej omówiona zostanie reprezentacja danych przestrzennych, która występuje w badanych pakietach, oraz zamieszczona jest tam krótka charakterystyka obu pakietów. Sekcja druga dotyczy kwestii zależności biblotek od biblotek zewnętrznych. Sekcja trzecia i czwarta omawia kolejno: metody wizualizacji oraz konstrukcje obiektów geometrycznych. Zbadany tam zostanie i omówiony zostanie czas wykonania oraz UX (ang. _user experience_). Sekcja piąta dotyczy transformacji układu współrzędnych, a sekcja szósta -- metod zapisu o dycztu danych.  Dokument zakończony jest podsumowaniem, wnioskami, płynącymi z użytkowania obu pakietów, oraz biblografią użytą przez autorów w ramach źródła informacji. 
 
+
+# Biblioteki i kod
+
+
+```{R}
+library(magrittr)
+library(sp)
+library(rgdal)
+library(spatstat)
+library(tmap)
+
+get_points = function(.num, .package) { 
+    if(.package == "sp")
+        sp::SpatialPoints(cbind(runif(.num), runif(.num)))
+    else
+        spatstat::ppp(x = runif(.num), y = runif(.num), xrange = c(0, 1), yrange = c(0, 1))
+}
+
+
+plot_points = function(.num, .package = "sp", .f=graphics::plot) { 
+        get_points(.num, .package) %T>% .f()
+        dev.off()
+}
+
+
+#` Benchmark funkcji .f(...)
+
+do_benchmark = function(.f, ...) {
+    microbenchmark::microbenchmark(.f(...)) %>%
+        dplyr::transmute(time = time*10^(-6)) %>%
+        dplyr::transmute(mean = mean(time),
+                      median = median(time),
+                      max = max(time),
+                      min = min(time)) %>% 
+        dplyr::slice(1)
+}
+
+```
 
 # Reprezentacja danych 
 ## Biblioteka `spatstat`
@@ -75,8 +112,6 @@ Sposób utworzenia i wykonywania pewnych operacji na tym typie prezentuje poniż
 
 
 ```{R}
-library(magrittr)
-
 points_number = 50
 
 points = points_number %>% spatstat::ppp(x = runif(.), y = runif(.), xrange = c(0, 1), yrange = c(0, 1))
@@ -86,8 +121,6 @@ points
 points %>% summary()
 
 points %>% plot("Punkty")
-
-
 ```
 
 
@@ -115,7 +148,6 @@ Obiekty typu `owin` mogą przyjmować dowolny kształt, być wizualizowane bez n
 Sposób utworzenia i wykonywania pewnych operacji na tym typie prezentuje poniższy listing:
 
 ```{R}
-
 window = spatstat::owin(xrange = c(0, 3), yrange = c(0, 5))
 
 window %>% spatstat::area()
@@ -142,7 +174,6 @@ Sposób utworzenia obiektu `im` prezentuje poniższy listing:
 
 
 ```{R}
-
 value_mat = matrix(runif(100), nrow=30, ncol=40)
 
 pixel_image = spatstat::im(value_mat) 
@@ -204,8 +235,6 @@ SpatialMultiPoints(list(
 Utworzenie `SpatialPoints` prezentuje poniższy listing:
 
 ```{R}
-library(tidyverse)
-
 coordinates = tibble::tibble(x1 = runif(10), x2 = runif(10), x3 = runif(10))
 
 points = coordinates %>% sp::SpatialPoints()
@@ -220,7 +249,6 @@ points %>% plot()
 Natomiast utworzenie `SpatialPointsDataFrame` wygląda następująco:
 
 ```{R}
-
 coordinates = tibble::tibble(x1 = runif(10), x2 = runif(10), x3 = runif(10))
 
 random_data = tibble::tibble(height = runif(10), weight = runif(10), iq = runif(10))
@@ -276,12 +304,13 @@ Obiekt klasy `Polygon` służy do reprezentacji wielokątów i jest konstruowany
 
 ```{R}
 polygon = sp::Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2))) 
+
 polygons = sp::Polygons(list(polygon), ID = "polygon_102")
+
 spatial_polygons = sp::SpatialPolygons(list(polygons))
 
 spatial_polygons %>% plot(main = "Wielobok")
             
-
 ```
 
 ## Uwagi
@@ -339,59 +368,227 @@ Pakiet `sp` zawiera znacznie mniejszą liczbę pakietów zewnętrznyc od któryc
 
 Oba pakiety implementują własną wersję generycznej funkcji `plot()`. W sekcji tej zostaną porównane implementacje tych funkcji pod kątem czasu działania dla różnych rozmiarów danych przestrzennych. Omówiona zostanie ponadto funkcja `sp::spplot()` oraz szereg specyficznych funkcji z pakietu `spatstat`, które służą do rysowania obiektów geometrycznych.
 
-## Rysowanie prostych obiektów geometrycznych
+## Wydajność rysowania prostych obiektów geometrycznych
+
+```{R}
+
+#sp_benchmark = tibble::tibble(do_benchmark(plot_points, 10),
+#                              do_benchmark(plot_points, 1000),
+#                              do_benchmark(plot_points, 100000))
+
+#sp_benchmark = tibble::tibble(do_benchmark(plot_points, 10, 'spatstat'),
+#                              do_benchmark(plot_points, 1000, 'spatstat'),
+#                              do_benchmark(plot_points, 100000, 'spatstat'))
+
+sp_benchmark %<>% dplyr::mutate(points_num = c(10, 1000, 100000),
+                                package = "sp")
+spatstat_benchmark %<>% dplyr::mutate(points_num = c(10, 1000, 100000), 
+                                      package = "spatstat")
+
+bench_df = dplyr::bind_rows(sp_benchmark, spatstat_benchmark)
+
+bench_df
+```
 
 
-get_points = function(.num, .package) { 
-    if(.package == "sp")
-        sp::SpatialPoints(cbind(runif(.num), runif(.num)))
-    else
-        spatstat::ppp(x = runif(.num), y = runif(.num), xrange = c(0, 1), yrange = c(0, 1))
-}
+## Rysowanie złozonych obiektów geometrycznych
+
+Pakiet `sp` implementuję również funkcję `sp:spplot()`, która jest roszerzeniem generycznej funkcji `plot()` o możliwość kolorowania obiektów `Spatial` na podstawie atrybutów
+umieszczonych w ramkach danych. Pakiet `spatstat` nie posiada takiej funkcjonalności.
+
+Na podstawie funkcji oferowanej przez pakiety `sp` sprawdzimy w jaki sposób narysować mapę.
 
 
-plot_points = function(.num, .package = "sp") { 
-        get_points(.num, .package) %T>% plot()
-        dev.off()
-}
+Przy użyciu pakietu `sp` wygląda to w następujący sposób:
+```{R}
+philly_crimes_sp <- rgdal::readOGR(dsn = "../data/PhillyCrimerate/", layer = "PhillyCrimerate", verbose = FALSE)
+spplot(philly_crimes_sp, "homic_dens")
+```
 
-do_benchmark = function(.f, ...) {
-    microbenchmark::microbenchmark(.f(...)) %>%
-        dplyr::transmute(time = time*10^(-6)) %>%
-        dplyr::transmute(mean = mean(time),
-                      median = median(time),
-                      max = max(time),
-                      min = min(time)) %>% 
-        dplyr::pluck(1)
-}
+Powyższe operacje sprowadzają sie do wczytania danych zawartych w pliku z roszerzeniem `.shp`, który zawiera specyfikację geometrii oraz dodatkowych danych, które pozwalają na utworzenie obiektu przestrzennego.
 
-#sp_benchmark = list(small = do_benchmark(plot_points, 10),
-#                    medium = do_benchmark(plot_points, 1000),
-#                    large = do_benchmark(plot_points, 100000))
+```{R}
+philly_crimes_sp %>% class()
+```
+
+W naszym przypadku wczytany dostał omawiany wcześniej obiekt `SpatialPolygonsDataFrame`. Funkcja `sp::splot()` jak zostało wspomniane wcześniej -- bierze pod uwagę wskazane atrybuty z ramek danych i uwzględnia je na wykresie w postaci heatmapy. 
+
+Abstrahując opisu od sposobu wczytania powyższych danych w pakiecie `spatstat`, które będą przedmiotem jednej z następnych sekcji dokumentu, podobna wizualizacja przy użyciu funkcji generycznej dla tego pakietu wyglądałaby w następujący sposób:
+
+Ekstrakcja okna z obiektu zewnętrznego:
+```{R}
+spatstat_owin = maptools::as.owin.SpatialPolygons(philly_crimes_sp) 
+```
+Ekstrakcja koordynatów przestrzennych z obiektu zewnętrznego
+```{R}
+coords = sp::coordinates(philly_crimes_sp)
+```
+
+Ekstrakcja danych
+```{R}
+data_frame <- as.data.frame(philly_crimes_sp)
+``` 
+Utworzenie obiektu ppp
+```{R}
+ppp_object = spatstat::ppp(x = coords[,1], y = coords[,2], window = spatstat_owin, marks = data_frame['homic_dens'])
+plot(ppp_object)
+
+```
 
 
+Sposób utworzenia tego wykresu jest znacznie bardziej skomplikowany i co gorsze -- jego estetyka mocno odbiega od tego, co można w prosty sposób uzyskać przy pomocy funkcji 
+`sp::spplot()`.
+
+
+Jednakże pakiet `spatstat` zapewnia szereg typów wykresów, których w prosty sposób nie da się uzyskać, stosując wyłącznie funkcje pakietu `sp`. 
+
+Przykładem takiego wykresu może być poniżej zaprezentowany wykres funkcji gęstości punktów na płaszczyźnie:
+
+```{R}
+dens_ppp <- density(ppp_object)
+
+plot(dens_ppp)
+```
+
+lub wykres dzielący okno na kwadraty i zliczający punkty wewnątrz każdego kwadratu:
+
+```{R}
+quadr = spatstat::quadratcount(ppp_object, nx = 4, ny = 3)
+plot(quadr)
+
+```
 
 ## Uwagi
 
+* wizualizacja w pakiecie `sp` jest znacznie łatwiejsza i co istotne w kontekście prezentacji danych -- estetyka funkcji `sp::spplot()` jest lepsza od archaicznie wyglądających metod pakietu `spatstat`
+* metody oferowane przez pakiet `sp` do wizualizacji danych są ponadto średnio dwukrotnie szybsze.
+
 # Transformacje układu współrzędnych
-TODO
-## Typy transformacji
-TODO
-## Czas wykonania
-TODO
+
+W języku `R` notacją używaną do opisu układu współrzędnych (dalej CRS) jest `proj4string` z biblioteki `PROJ.4`, która wygląda w następujący sposób:
+
+```
++<arg>=<value>
+
+```
+Na przykład:
+```
++init=epsg:4121 +proj=longlat +ellps=GRS80
++datum=GGRS87 +no_defs +towgs84=-199.87,74.79,246.62
+```
+
+Przy wczytywaniu danych w formacie `.shp` przy pomocy użytej już wcześniej funkcji `rgdal::readOGR()` informacje o CRS są dołączane automatycznie. 
+
+Pakiet `sp` oferuje następujące metody związane z CRS:
+
+- `sp::proj4string()`
+- `sp::CRS()`
+- `sp::spTransform()`
+
+
+Sposób użycia poniższych funkcji prezentuje poniższy listing:
+
+```{R}
+philly_crimes_sp %>% sp::proj4string()
+```
+
+```{R}
+new_philly_crimes_sp = philly_crimes_sp %>% sp::spTransform(CRS("+init=epsg:27561"))
+```
+Przed zmianą CRS na CRS definiowany przez `epsg` o indeksie $27561$:
+```{R}
+plot(philly_crimes_sp)
+```
+Po zmianie CRS:
+```{R}
+plot(new_philly_crimes_sp)
+
+```
+Pakiet `spatstat` *nie oferuje* możliwości operowania na CRS.
+
 # Zapis i wczytanie danych
-TODO
+
 ## Operacje wczytania danych
-TODO
-### Dostępne formaty danych
-TODO
-### Czas wykonania 
-TODO
+
+Biblioteka `sp` natywnie nie posiada funkcji, które służą do odczytu danych przestrzennych z plików. W celu wczytania danych do typów wprowadzanych przez pakiet stosowany
+jest pakiet `rgdal`, który z kolei zapewnia dostęp do metod biblioteki `GDAL` (Geospatial Data Abstraction Library) napisanej w języku C oraz C++.
+
+
+Operacje odczytu dostępne w tej bibliotece to:
+
+- `rgdal::readOGR()`
+- `rgdal::readGDAL()`
+
+Funkcja `rgdal::readOGR()` służy do odczytu danych wektorowych (np. `SpatialPoints`), a funkcja `rgdal::readGDAL()` do odczytu obiektów typu `Grids`.
+
+
+Jedyną metodą wczytywania danych, która zwraca obiekt biblioteki `spatstat`, jest `spatstat::scanpp()`. Metoda ta jest wrapperem na bazową metodę języka `R` do odczytywania danych w formacie kolumnowym (CSV), tj. `utils::read.table()`, która lokalizuje co najwyżej dwie kolumny z parametrami przestrzennymi, a resztę kolumn traktuję jako `marks` tworzonego obiektu.
+
+W większości przypadków jedyną _sensowną_ metodą wczytywania danych przestrzennych w biblotece `spatstat` jest wczytywanie ich za pomocą biblioteki `sp`. Procedura taka została przeprowadzona przy opisie wizualizacji.
+
+### Dostępne formaty danych -- pakiet `sp`
+
+W związku z faktem, że biblioteka `rgdal` dostarcza wrapperów na funkcje z biblioteki `GDAL` dostępne są wszytkie formaty obsługiwane przez nią. Przy czym najważniejsze z nich to:
+
+- `.shp`
+- `.shx`
+- `.dbf`
+
+W plikach z foramtem `.shp` zapisana jest geometria wczytywanych danych. Pliki `.dbf` zawierają dane nieprzestrzenne, które dołączane są do obiektów w postaci ramek danych (np. `SpatialLinesDataFrame`), natomiast pliki `.shx` zawierają indeksy umożliwiające szybkie wyszukiwanie elementów składowych obiektów geometrycznych.
+
+Sposób użycia opisanych metod prezentuje poniższy listing:
+
+```{R}
+philly_df <- rgdal::readOGR(dsn = "../data/Philly/", layer = "PhillyTotalPopHHinc") 
+
+philly_df %>% class()
+```
+
+przy czym parametr `dsn` jest ścieżką do katalogu, w którym znajdują się dane, a `layer` jest nazwą pliku z roszerzeniem `.shp`.
+
+### Dostępne formaty danych -- pakiet `spatstat`
+
+Jedynym dostępnym formatem, który obsługuje biblioteka `spatstat` jest format CSV.
+
 ## Operacje zapisu danych
-TODO
-### Dostępne formaty danych
-TODO
-### Czas wykonania 
-TODO
-# Konwersje typów
-TODO
+
+Biblioteka `sp` stosuje metody zapisu dostarczane przez bibliotekę `rgdal`, tj.:
+
+- `rgdal::writeOGR()`
+- `rgdal::writeGDAL()`
+
+Metody te posiadają identyczny sposób użycia jak funkcje służące do wczytywania danych.
+
+### Dostępne formaty danych -- biblioteka `sp`
+
+
+Biblioteka `sp` zapisuje dane do formatów:
+
+- `.shp`
+- `.shx`
+- `.dbf`
+
+### Dostępne formaty danych -- biblioteka `spatstat`
+
+Biblioteka `spatstat` nie zapewnia metod, które pozwalałyby zapisywać dane do pliku w formacie dedykowanym danym przestrzennym lub w ogólności -- typom obiektów geometrycznych zapewninaych przez siebie. 
+Jedyną metodą za pomocą takie obiekty można zapisywać jest zapis obiektów do plików binarnych RDS.
+
+# Wnioski końcowe
+
+Zakres dokonywanego porównania wyznaczała biblioteka `sp` ze względu na jej wyspecjalizowane zastosowanie, które ogranicza się do wizualizacji i przetwarzania danych przestrzennych. Funkcje zapewnianie przez bibliotekę `spatstat` -- co zostało wspomniane już na wstępie raportu -- znacznie wykraczają poza ten zakres. 
+Jednakże w kontekście tylko tych płaszczyzn, na których oba pakiety można było ze soba porównać -- biblioteka `spatstat` nie jest najlepszym wyborem. 
+
+Wniosek taki wynika z faktu, że pakiet ten oferuje obiekty geometryczne o bardzo prostej reprezentacji i najwięcej uwagi poświęcone jest obiektom typu `ppp`. Dodatkowo interfejs do operowania na proponowanych przez siebie typach jest niewygodny ze względu na konieczność specyfikacji obiektu okna. 
+Sposób wizulizacji, który dostarcza biblioteka, również odbiega od pewnego _state-of-the-art_ metod wizualizacyjnych ekosystemu `R` i nieznacznie różni sie od metod bazowych metod wizualizacyjnych. 
+Na niekorzyść pakietu świadczy również fakt, że niewiele pakietów poświęconych wizualizacji lub przetwarzania danych przestrzennych współpracuje z obiektami tej biblioteki, a w szczególnie rążący jest brak obsługi standardów *ESRI*. 
+
+W przypadku biblioteki `sp` sytuacja jest wręcz przeciwna. Pakiet ten mimo długiego czasu życia nadal jest aktywie rozwijany i aktualizowany, a stosowany system typów powszechnie wykorzystywany nawet przez nowoczesne pakiety jak `tmap`, który pozwala tworzyć mapy w bardzo wygodny i estetyczny sposób:
+
+
+```{R}
+tmap_mode("plot")
+tm_shape(philly_crimes_sp, projection="longlat") + tm_polygons("homic_dens", style="quantile")
+```
+
+
+
