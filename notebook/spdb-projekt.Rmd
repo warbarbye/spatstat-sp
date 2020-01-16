@@ -1,12 +1,19 @@
 ---
-title: "Przestrzenne bazy danych: porównanie bibliotek `spatstat` oraz `sp`"
-author: 
-    - Aleksandra Dzieniszewska
-    - Eryk Warchulskki
+title: 'Przestrzenne bazy danych: por<c3><b3>wnanie bibliotek `spatstat` oraz `sp`'
+author:
+- Aleksandra Dzieniszewska
+- Eryk Warchulskki
 output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '3'
   html_notebook:
-    toc: true
+    toc: yes
     toc_depth: 3
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
 ---
 
 
@@ -273,7 +280,7 @@ grid_object = sp::SpatialGrid(grid_topology)
 
 summary(grid_object)
 
-grid_object %>% plot("Siatka")
+grid_object %>% plot(main="Siatka")
 ```
 
 ### Line, Lines, SpatialLines
@@ -310,7 +317,6 @@ polygons = sp::Polygons(list(polygon), ID = "polygon_102")
 spatial_polygons = sp::SpatialPolygons(list(polygons))
 
 spatial_polygons %>% plot(main = "Wielobok")
-            
 ```
 
 ## Uwagi
@@ -370,7 +376,7 @@ Oba pakiety implementują własną wersję generycznej funkcji `plot()`. W sekcj
 
 ## Wydajność rysowania prostych obiektów geometrycznych
 
-```{R}
+```{R error=TRUE}
 
 #sp_benchmark = tibble::tibble(do_benchmark(plot_points, 10),
 #                              do_benchmark(plot_points, 1000),
