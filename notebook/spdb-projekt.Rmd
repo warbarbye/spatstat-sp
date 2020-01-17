@@ -4,13 +4,13 @@ author:
 - Aleksandra Dzieniszewska
 - Eryk Warchulskki
 output:
+  html_notebook:
+    toc: yes
+    toc_depth: 3
   html_document:
     df_print: paged
     toc: yes
     toc_depth: '3'
-  html_notebook:
-    toc: yes
-    toc_depth: 3
   pdf_document:
     toc: yes
     toc_depth: '3'
@@ -59,7 +59,7 @@ get_points = function(.num, .package) {
 
 
 plot_points = function(.num, .package = "sp", .f=graphics::plot) { 
-        get_points(.num, .package) %T>% .f()
+        get_points(.num, .package) %T>% plot()
         dev.off()
 }
 
@@ -592,7 +592,8 @@ W przypadku biblioteki `sp` sytuacja jest wręcz przeciwna. Pakiet ten mimo dłu
 
 
 ```{R}
-tmap_mode("plot")
+library(tmap)
+tmap_mode("view")
 tm_shape(philly_crimes_sp, projection="longlat") + tm_polygons("homic_dens", style="quantile")
 ```
 
