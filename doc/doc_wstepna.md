@@ -14,14 +14,14 @@ Obie biblioteki dotyczą danych przestrzennych, ale ich zastosowanie jest nieco 
 Biblioteki te różnią się również architekturą: 
 * `sp` jest oparta na systemie klas `S4`, w której klasą abstrakcyjną jest klasa `Spatial` -- wszystkie pozostałe klasy stanowią pochodne tej klasy 
 * `spatstat` jest oparta na systemie klas `S3` oraz proponuje następujące typy podstawowe:
-	* `ppp` point pattern
-	* `owin` window (spatial region)
-	* `im` pixel image
-	* `psp` line segment pattern
-	* `tess` tessellation
-	* `pp3` three-dimensional point pattern
-	* `ppx` point pattern in any number of dimensions
-	* `lpp` point pattern on a linear network
+	* `ppp` zbiór punktów (dwuwymiarowy) 
+	* `owin` okno (obszar przestrzeni) 
+	* `im` obraz pikselowy 
+	* `psp` łamana 
+	* `tess` mozaika
+	* `pp3` trójwymiarowy zbiór punktów 
+	* `ppx` wielowymiarowy zbiór punktów
+	* `lpp` zbiór punktów na sieci liniowej 
 
 todo reszta
 
